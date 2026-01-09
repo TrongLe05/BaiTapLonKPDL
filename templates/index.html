@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Dự đoán nguy cơ đột quỵ</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<div class="card">
+    <h1>Dự đoán nguy cơ đột quỵ</h1>
+    <p class="subtitle">
+        Nhập thông tin sức khỏe cơ bản để dự đoán nguy cơ đột quỵ
+    </p>
+
+    <form action="{{ url_for('predict') }}" method="post">
+
+        <div class="field">
+            <label>Tuổi</label>
+            <input type="number" name="age" placeholder="Ví dụ: 67" required>
+        </div>
+
+        <div class="field">
+            <label>Tăng huyết áp</label>
+            <div class="radio-group">
+                <label class="radio">
+                    <input type="radio" name="hypertension" value="1" required>
+                    <span>Có</span>
+                </label>
+                <label class="radio">
+                    <input type="radio" name="hypertension" value="0">
+                    <span>Không</span>
+                </label>
+            </div>
+        </div>
+
+        <div class="field">
+            <label>Bệnh tim</label>
+            <div class="radio-group">
+                <label class="radio">
+                    <input type="radio" name="heart_disease" value="1" required>
+                    <span>Có</span>
+                </label>
+                <label class="radio">
+                    <input type="radio" name="heart_disease" value="0">
+                    <span>Không</span>
+                </label>
+            </div>
+        </div>
+
+        <div class="field">
+            <label>Mức đường huyết trung bình</label>
+            <input type="number" step="0.01" name="avg_glucose_level"
+                   placeholder="Ví dụ: 228.69" required>
+        </div>
+
+        <div class="field">
+            <label>Chỉ số BMI</label>
+            <input type="number" step="0.1" name="bmi"
+                   placeholder="Ví dụ: 36.6" required>
+        </div>
+
+        <button type="submit">Dự đoán nguy cơ</button>
+    </form>
+
+    {% if prediction_text %}
+        <div class="result">
+            {{ prediction_text }}
+        </div>
+    {% endif %}
+</div>
+
+</body>
+</html>
