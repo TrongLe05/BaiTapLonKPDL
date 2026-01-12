@@ -27,7 +27,7 @@ regressor = LinearRegression()
 regressor.fit(x, y)
 
 # Lưu model
-pickle.dump(regressor, open('model.pkl', 'wb'))
+pickle.dump(regressor, open('linear_model.pkl', 'wb'))
 
 '''
 # Load model và test thử

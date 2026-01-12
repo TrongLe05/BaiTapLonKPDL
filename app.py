@@ -8,7 +8,7 @@ import pickle
 app = Flask(__name__)
 
 # Load trained model
-model = pickle.load(open('model.pkl', 'rb'))
+model = pickle.load(open('logistic_model.pkl', 'rb'))
 
 # Home page
 @app.route('/')
