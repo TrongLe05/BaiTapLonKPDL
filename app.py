@@ -1,55 +1,42 @@
-# import libraries
-import numpy as np
 import pandas as pd
 from flask import Flask, request, render_template
 import pickle
 
-# Initialize the Flask app
 app = Flask(__name__)
 
 # Load trained model
-model = pickle.load(open('logistic_model.pkl', 'rb'))
+model = pickle.load(open("logistic_model.pkl", "rb"))
 
-# Home page
-@app.route('/')
+@app.route("/")
 def home():
-    return render_template('index.html')
+    return render_template("index.html")
 
-# Predict route
-@app.route('/predict', methods=['POST'])
+@app.route("/predict", methods=["POST"])
 def predict():
-    '''
-    Render prediction result on HTML
-    '''
-
-    # Lấy dữ liệu từ form theo đúng thứ tự model đã train
-    age = float(request.form['age'])
-    hypertension = float(request.form['hypertension'])
-    heart_disease = float(request.form['heart_disease'])
-    avg_glucose_level = float(request.form['avg_glucose_level'])
-    bmi = float(request.form['bmi'])
-
-    final_features = pd.DataFrame([{
-        "age": age,
-        "hypertension": hypertension,
-        "heart_disease": heart_disease,
-        "avg_glucose_level": avg_glucose_level,
-        "bmi": bmi
+    input_data = pd.DataFrame([{
+        "gender": request.form.get("gender", "Male"),
+        "age": float(request.form["age"]),
+        "hypertension": int(request.form["hypertension"]),
+        "heart_disease": int(request.form["heart_disease"]),
+        "ever_married": request.form.get("ever_married", "No"),
+        "work_type": request.form.get("work_type", "Private"),
+        "Residence_type": request.form.get("Residence_type", "Urban"),
+        "avg_glucose_level": float(request.form["avg_glucose_level"]),
+        "bmi": float(request.form["bmi"]),
+        "smoking_status": request.form.get("smoking_status", "never smoked")
     }])
 
-    prediction = model.predict(final_features)
+    proba = model.predict_proba(input_data)[0][1]
 
-    output = round(prediction[0], 2)
-
-    # Vì stroke là 0/1 nên diễn giải kết quả
-    if output >= 0.5:
-        result = "Nguy cơ đột quỵ cao"
-    else:
-        result = "Nguy cơ đột quỵ thấp"
+    result = (
+        "Nguy cơ đột quỵ CAO 🚨"
+        if proba >= 0.5
+        else "Nguy cơ đột quỵ THẤP ✅"
+    )
 
     return render_template(
-        'index.html',
-        prediction_text=f'Dự đoán: {result} (value = {output})'
+        "index.html",
+        prediction_text=f"{result} (Độ tin cậy: {proba:.2%})"
     )
 
 if __name__ == "__main__":
